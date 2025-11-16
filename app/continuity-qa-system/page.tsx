@@ -49,63 +49,98 @@ export default function ContinuityQASystem() {
     
     await new Promise(resolve => setTimeout(resolve, 2500));
     
+    // Generate dynamic issues based on actual number of frames
+    const numFrames = imageFiles.length;
+    const issues: Issue[] = [];
+    let issueId = 1;
+    
+    // Generate 3-5 random issues based on frame count
+    if (numFrames >= 3) {
+      const frame1 = Math.floor(Math.random() * (numFrames - 1));
+      const frame2 = frame1 + 1;
+      issues.push({
+        id: issueId++,
+        type: "prop_discontinuity",
+        severity: "high",
+        frames: [frame1, frame2],
+        description: `Object disappears between frame ${frame1 + 1} and ${frame2 + 1}`,
+        confidence: 0.92 + Math.random() * 0.06,
+        location: { x: 300 + Math.floor(Math.random() * 200), y: 400 + Math.floor(Math.random() * 200) }
+      });
+    }
+    
+    if (numFrames >= 4) {
+      const frame1 = Math.floor(Math.random() * (numFrames - 2)) + 1;
+      const frame2 = frame1 + 1;
+      issues.push({
+        id: issueId++,
+        type: "color_shift",
+        severity: "medium",
+        frames: [frame1, frame2],
+        description: `Color temperature shift detected (+${300 + Math.floor(Math.random() * 300)}K)`,
+        confidence: 0.85 + Math.random() * 0.08,
+        colorDelta: { deltaE: 10 + Math.random() * 5, temp: `+${300 + Math.floor(Math.random() * 300)}K` }
+      });
+    }
+    
+    if (numFrames >= 5) {
+      const frame1 = Math.floor(Math.random() * (numFrames - 2)) + 2;
+      const frame2 = frame1 + 1;
+      issues.push({
+        id: issueId++,
+        type: "wardrobe_change",
+        severity: "high",
+        frames: [frame1, frame2],
+        description: `Wardrobe inconsistency detected in frame ${frame1 + 1}`,
+        confidence: 0.88 + Math.random() * 0.08,
+        location: { x: 450 + Math.floor(Math.random() * 150), y: 150 + Math.floor(Math.random() * 100) }
+      });
+    }
+    
+    if (numFrames >= 6) {
+      const frame1 = Math.floor(Math.random() * (numFrames - 2)) + 1;
+      const frame2 = frame1 + 1;
+      issues.push({
+        id: issueId++,
+        type: "lighting_inconsistency",
+        severity: "low",
+        frames: [frame1, frame2],
+        description: `Minor exposure variation (${(Math.random() * 0.5 - 0.3).toFixed(1)} stops)`,
+        confidence: 0.72 + Math.random() * 0.08,
+        exposure: `${(Math.random() * 0.5 - 0.3).toFixed(1)} EV`
+      });
+    }
+    
+    if (numFrames >= 7) {
+      const frame1 = Math.floor(Math.random() * (numFrames - 2)) + 2;
+      const frame2 = frame1 + 1;
+      issues.push({
+        id: issueId++,
+        type: "position_jump",
+        severity: "medium",
+        frames: [frame1, frame2],
+        description: `Background element position jump (${10 + Math.floor(Math.random() * 20)}px)`,
+        confidence: 0.78 + Math.random() * 0.08,
+        displacement: `${10 + Math.floor(Math.random() * 20)}px`
+      });
+    }
+    
+    // Calculate score based on issues
+    const criticalIssues = issues.filter(i => i.severity === 'high').length;
+    const mediumIssues = issues.filter(i => i.severity === 'medium').length;
+    const baseScore = 95 - (criticalIssues * 8) - (mediumIssues * 4);
+    
     const mockResults: AnalysisResults = {
-      totalFrames: imageFiles.length,
-      sceneName: "Scene_045_Shot_12",
+      totalFrames: numFrames,
+      sceneName: `Scene_${String(Math.floor(Math.random() * 100) + 1).padStart(3, '0')}_Shot_${Math.floor(Math.random() * 20) + 1}`,
       analysisDate: new Date().toLocaleString(),
-      continuityScore: 78,
-      issues: [
-        {
-          id: 1,
-          type: "prop_discontinuity",
-          severity: "high",
-          frames: [2, 3],
-          description: "Cup disappears between frame 2 and 3",
-          confidence: 0.94,
-          location: { x: 340, y: 520 }
-        },
-        {
-          id: 2,
-          type: "color_shift",
-          severity: "medium",
-          frames: [5, 6],
-          description: "Drastic color temperature shift (+450K)",
-          confidence: 0.88,
-          colorDelta: { deltaE: 12.4, temp: "+450K" }
-        },
-        {
-          id: 3,
-          type: "wardrobe_change",
-          severity: "high",
-          frames: [7, 8],
-          description: "Main character necklace change",
-          confidence: 0.91,
-          location: { x: 512, y: 180 }
-        },
-        {
-          id: 4,
-          type: "lighting_inconsistency",
-          severity: "low",
-          frames: [4, 5],
-          description: "Minor exposure variation (-0.3 stops)",
-          confidence: 0.76,
-          exposure: "-0.3 EV"
-        },
-        {
-          id: 5,
-          type: "position_jump",
-          severity: "medium",
-          frames: [6, 7],
-          description: "Background object position jump (15px)",
-          confidence: 0.82,
-          displacement: "15px"
-        }
-      ],
+      continuityScore: Math.max(60, Math.min(95, baseScore)),
+      issues: issues,
       metrics: {
-        colorConsistency: 82,
-        objectTracking: 71,
-        lightingConsistency: 85,
-        spatialContinuity: 76
+        colorConsistency: 75 + Math.floor(Math.random() * 15),
+        objectTracking: 70 + Math.floor(Math.random() * 20),
+        lightingConsistency: 80 + Math.floor(Math.random() * 15),
+        spatialContinuity: 72 + Math.floor(Math.random() * 18)
       }
     };
     
@@ -340,15 +375,21 @@ export default function ContinuityQASystem() {
                         {/* Affected frame thumbnails */}
                         <div>
                           <div className="text-sm font-semibold mb-2">Affected Frames:</div>
-                          <div className="flex gap-3">
+                          <div className="flex gap-3 overflow-x-auto">
                             {issue.frames.map(frameIdx => {
                               const frame = frames[frameIdx];
-                              if (!frame) return null;
+                              if (!frame) {
+                                return (
+                                  <div key={frameIdx} className="relative w-32 h-24 bg-slate-700 rounded flex items-center justify-center">
+                                    <span className="text-xs text-slate-500">Frame {frameIdx + 1}</span>
+                                  </div>
+                                );
+                              }
                               return (
-                                <div key={frameIdx} className="relative">
+                                <div key={frameIdx} className="relative flex-shrink-0">
                                   <img 
                                     src={frame.url} 
-                                    alt={`Frame ${frameIdx}`}
+                                    alt={`Frame ${frameIdx + 1}`}
                                     className="w-32 h-24 object-cover rounded border-2 border-current border-opacity-30"
                                   />
                                   <div className="absolute bottom-1 left-1 bg-black bg-opacity-70 px-2 py-1 rounded text-xs font-semibold">
