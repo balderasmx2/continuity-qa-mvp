@@ -1,6 +1,12 @@
-# continuity-qa-mvp
 Continuity QA System - MVP
 # Continuity QA System - MVP
+
+
+
+<img width="1767" height="1231" alt="Captura de pantalla 2025-11-16 161120" src="https://github.com/user-attachments/assets/f7d72cf6-0793-4971-a4c4-7d0696a24963" />
+
+<img width="1773" height="978" alt="Captura de pantalla 2025-11-16 161227" src="https://github.com/user-attachments/assets/390b23e0-79b0-46a8-9a5f-f4cb30de9360" />
+
 
 AI-powered continuity analysis for film production.
 
