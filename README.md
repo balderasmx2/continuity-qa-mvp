@@ -43,7 +43,7 @@ python backend/continuity_analyzer.py
 - `requirements.txt` - Python dependencies
 
 ## 💻 Hardware Requirements
-- GPU with 24GB+ VRAM (96GB recommended)
+- GPU with 16GB+ VRAM (96GB recommended)
 - 64GB+ RAM
 - NVMe SSD storage
 
